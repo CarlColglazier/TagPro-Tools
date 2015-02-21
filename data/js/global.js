@@ -183,7 +183,7 @@ document.documentElement.addEventListener('drop', function(event) {
 
 function loadOptionalScripts() {
     'use strict';
-    if (typeof tagpro.tools.optional === 'undefined') {
+    if (typeof tagpro.tools.optional.keyCommands === 'undefined') {
         setTimeout(loadOptionalScripts, 1000);
     }
     var i;
