@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "name": "TagPro Tools",
+  "version": "0.0.0",
+  "description": "Tools for TagPro",
+  "author": "Carl Colglazier",
+  "permissions": [
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.koalabeast.com/*",
+        "*://*.newcompte.fr/*",
+        "*://tangent.jukejuice.com/*"
+      ],
+      "js": [
+        "chrome/main.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    "data/*"
+  ]
+}

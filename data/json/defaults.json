@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "functions": {
+      "overrideDisableControls": true,
+      "spinBall": true,
+      "keyCommands": true,
+      "chatMacros": true
+    }
+  }
+}
