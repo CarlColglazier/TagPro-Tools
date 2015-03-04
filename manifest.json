@@ -17,6 +17,9 @@
       "js": [
         "chrome/main.js"
       ],
+      "css": [
+        "data/css/tools.css"
+      ],
       "run_at": "document_end"
     }
   ],

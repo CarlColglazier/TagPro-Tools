@@ -1,16 +1,6 @@
 /* jshint devel:true */
 /* global tagpro */
 
-tagpro.tools = {
-    global: {
-        shortcuts: {}
-    },
-    optional: {},
-    settings: {
-        functions: {}
-    }
-};
-
 /**
  * Create a new keyboard shortcut.
  * @param {number} key_code - A keyboard key.
@@ -137,14 +127,201 @@ tagpro.tools.global.getData = function(sender, message, callback) {
     messageCallbacks[sender] = callback;
 };
 
-// Get the settings (this is needed on every page).
-tagpro.tools.global.getData('settings', 'settings', function(message) {
+/*
+ * Convert the settings object from something usable by the settings menu
+ *     to a parseable format to be used by the program itself.
+ */
+function flattenSettings(data, callback) {
     'use strict';
-    if (!message.settings) {
-        return;
+    if (typeof data !== 'object') {
+        return {};
     }
-    tagpro.tools.settings = message.settings;
+    function flattenObject(obj) {
+        var i;
+        for (i in obj) {
+            if (!obj.hasOwnProperty(i)) {
+                continue;
+            }
+            if (typeof obj[i] === 'object') {
+                if (obj[i].value) {
+                    if (typeof obj[i].value === 'object') {
+                        obj[i] = flattenObject(obj[i].value);
+                    } else {
+                        obj[i] = obj[i].value;
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+    callback(flattenObject(data));
+}
+
+function clone(obj) {
+    'use strict';
+    if (obj === null || typeof(obj) !== 'object') {
+        return obj;
+    }
+    var temp = obj.constructor(); // changed
+
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key)) {
+            temp[key] = clone(obj[key]);
+        }
+    }
+    return temp;
+}
+
+// Get the settings (this is needed on every page).
+function loadSettings() {
+    'use strict';
+    tagpro.tools.global.getData('starter settings', 'settings', function (message) {
+        if (!message.settings) {
+            return;
+        }
+        tagpro.tools.menu = message.settings.value;
+        var message_copy = clone(message);
+        flattenSettings(message_copy, function (obj) {
+            tagpro.tools.settings = obj.settings;
+        });
+    });
+}
+
+loadSettings();
+
+// Add sound menu if it does not exist.
+if (!document.getElementById('sound')) {
+    var new_sound = document.createElement('div');
+    new_sound.id = 'sound';
+    document.body.appendChild(new_sound);
+}
+var tools_logo = document.createElement('button');
+tools_logo.textContent = 't';
+tools_logo.classList.add('tools-logo-button');
+tools_logo.addEventListener('click', function(event) {
+    'use strict';
+    if (!document.getElementById('tools-settings')) {
+        tagpro.tools.global.openSettings();
+        event.target.textContent = 'x';
+    } else {
+        document.getElementById('tools-settings').parentElement.removeChild(document.getElementById('tools-settings'));
+        event.target.textContent = 't';
+        loadSettings();
+    }
 });
+document.getElementById('sound').appendChild(tools_logo);
+
+tagpro.tools.global.openSettings = function() {
+    'use strict';
+    var tools_settings = document.createElement('aside'),
+        menu = tagpro.tools.menu,
+        i;
+    tools_settings.classList.add('tools-settings');
+    tools_settings.id = 'tools-settings';
+    function newSection(name, type) {
+        var new_section = document.createElement(type);
+        new_section.id = name;
+        if (type === 'section') {
+            new_section.classList.add('tools-settings-section');
+        }
+        return new_section;
+    }
+    function newButton(name, section) {
+        var button = newSection(name, 'button');
+        button.textContent = name;
+        button.classList.add('button');
+        button.addEventListener('click', function() {
+            var i;
+            console.log(section);
+            for (i = 0; i < document.getElementsByClassName('tools-settings-section').length; i++) {
+                console.log(document.getElementsByClassName('tools-settings-section')[i].id);
+                document.getElementsByClassName('tools-settings-section')[i].style.display = (document.getElementsByClassName('tools-settings-section')[i].id === section) ? 'inline' : 'none';
+            }
+        });
+        return button;
+    }
+    function newHeader(text, type) {
+        var heading = document.createElement(type);
+        heading.textContent = text;
+        heading.id = text;
+        return heading;
+    }
+    function newInput(key) {
+        var new_div = document.createElement('div'),
+            new_input = newSection(key.identity, 'input'),
+            new_label = document.createElement('label'),
+            value = key.value;
+        new_input.value = value;
+        new_label.htmlFor = key.identity;
+        new_label.textContent = key.identity;
+        switch(typeof value) {
+        case 'boolean':
+            new_input.type = 'checkbox';
+            new_input.checked = value;
+            break;
+        case 'number':
+            new_input.type = 'number';
+            break;
+        case 'string':
+            new_input.type = 'text';
+            break;
+        default:
+            break;
+        }
+        new_div.appendChild(new_label);
+        new_div.appendChild(new_input);
+        return new_div;
+    }
+    function menuObject(obj) {
+        var new_div = document.createElement('div'),
+            i;
+        if (obj.value) {
+            if (typeof obj.value === 'object') {
+                new_section.appendChild(newHeader(obj.identity, 'h4'));
+                new_div.appendChild(menuObject(obj.value));
+            } else {
+                new_div.appendChild(newInput(obj));
+            }
+        } else if (typeof obj === 'object') {
+            var new_input_key = {};
+            for (i in obj) {
+                if (!obj.hasOwnProperty(i)) {
+                    continue;
+                }
+                new_input_key.identity = i;
+                new_input_key.value = obj[i];
+                new_div.appendChild(menuObject(new_input_key));
+            }
+        }
+        return new_div;
+    }
+    var button_area = newSection('tools-settings-buttons', 'div');
+    tools_settings.appendChild(button_area);
+    for (i in menu) {
+        if (!menu.hasOwnProperty(i)) {
+            continue;
+        }
+        var new_section = newSection(i, 'section');
+        new_section.appendChild(newHeader(menu[i].identity, 'h3'));
+        new_section.appendChild(newHeader(menu[i].description, 'h5'));
+        button_area.appendChild(newButton(menu[i].identity, i));
+        switch (typeof menu[i].value) {
+        case 'object':
+            var y;
+            for (y in menu[i].value) {
+                if (!menu[i].value.hasOwnProperty(y)) {
+                    continue;
+                }
+                new_section.appendChild(menuObject(menu[i].value[y]));
+            }
+            break;
+        default:
+            break;
+        }
+        tools_settings.appendChild(new_section);
+    }
+    document.body.appendChild(tools_settings);
+};
 
 // Handle communications between the client and the extension.
 window.addEventListener('message', function(event) {
@@ -183,10 +360,18 @@ document.documentElement.addEventListener('drop', function(event) {
 
 function loadOptionalScripts() {
     'use strict';
-    if (typeof tagpro.tools.optional.keyCommands === 'undefined') {
-        setTimeout(loadOptionalScripts, 1000);
+    var i,
+        x = 0;
+    for (i in tagpro.tools.settings) {
+        if (!tagpro.tools.settings.hasOwnProperty(i)) {
+            continue;
+        }
+        x++;
     }
-    var i;
+    if (!x) {
+        return setTimeout(loadOptionalScripts, 1000);
+    }
+
     for (i in tagpro.tools.optional) {
         if (tagpro.tools.optional.hasOwnProperty(i)) {
             if (tagpro.tools.settings.functions[i]) {

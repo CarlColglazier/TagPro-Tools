@@ -1,10 +1,69 @@
 {
   "settings": {
-    "functions": {
-      "overrideDisableControls": true,
-      "spinBall": true,
-      "keyCommands": true,
-      "chatMacros": true
+    "identity": "Settings",
+    "description": "Things to be turned on or off.",
+    "value": {
+      "functions": {
+        "identity": "Functions",
+        "description": "The functions the power everything.",
+        "value": {
+          "overrideDisableControls": {
+            "identity": "Use keys in chat.",
+            "description": "Fixes the highly annoying sticky keys bug.",
+            "uses": ["game"],
+            "value": true
+          },
+          "spinBall": {
+            "identity": "Spin ball",
+            "description": "Adds spin to the ball itself.",
+            "uses": ["game"],
+            "value": true
+          },
+          "customColors": {
+            "identity": "Custom colors",
+            "description": "It just looks better.",
+            "uses": ["game"],
+            "value": true
+          },
+          "transparentViewport": {
+            "identity": "Transparent Viewport",
+            "description": "Currently not working.",
+            "uses": ["game"],
+            "value": true
+          },
+          "keyCommands": {
+            "identity": "Tools official key commands.",
+            "description": "Because using a mouse is too hard.",
+            "uses": ["game", "home", "boards"],
+            "value": true
+          }
+        }
+      },
+      "ui": {
+        "identity": "Interface",
+        "description": "Color settings",
+        "value": {
+          "colors": {
+            "identity": "Colors",
+            "description": "One fish, two fish, red fish, blue fish.",
+            "value": {
+              "green": "#4FCC13",
+              "dark green": "#539931",
+              "red": "#DC143B",
+              "light red": "#EE778E",
+              "yellow": "#EC8215",
+              "blue": "#127693",
+              "light blue": "#68B4C9",
+              "purple": "#7B139C",
+              "stroke": "#636363"
+            }
+          },
+          "fonts": {
+            "primary": "Open Sans",
+            "stroke thickness": 2
+          }
+        }
+      }
     }
   }
 }

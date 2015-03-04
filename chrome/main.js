@@ -18,46 +18,10 @@ function addScriptToDom(path) {
     (document.head || document.documentElement).appendChild(script);
 }
 
-// The global script is injected on every page.
-addScriptToDom('data/js/global.js');
-
-// For pages where the pathname varies.
-function findScript(path) {
-    'use strict';
-    if (path.indexOf('/profile/') >= 0) {
-        // Profile
-        return addScriptToDom('data/js/profile.js');
-    }
-    if (path.indexOf('/groups/') >= 0) {
-        return addScriptToDom('data/js/groups.js');
-    }
-}
-
-// Check if the user is in a game.
-if (parseInt(location.port, 10) >= 8000) {
-    addScriptToDom('data/js/game.js');
-} else {
-    switch (location.pathname) {
-    case '/':
-        addScriptToDom('data/js/homepage.js');
-        break;
-    case '/groups/':
-        break;
-    case '/boards':
-        addScriptToDom('data/js/boards.js');
-        break;
-    default:
-        findScript(location.pathname);
-        break;
-    }
-}
-
 // Get data from Chrome's storage.
 function getChromeData(request, callback) {
     'use strict';
-    chrome.storage.local.get(request, function(items) {
-        callback(items);
-    });
+    chrome.storage.local.get(request, callback);
 }
 
 // Add data to Chrome's storage.
@@ -91,19 +55,37 @@ window.addEventListener('message', function (event) {
 var new_request = new XMLHttpRequest();
 new_request.addEventListener('load', function(){
     'use strict';
+
+    // Sync defaults with local storage.
     var i,
         defaults = JSON.parse(this.responseText);
     function checkDefaults(items) {
-        var x;
+        var needs_change = false,
+            new_data = (items[i]) ? items[i] : {};
         if (typeof items[i] === 'undefined') {
-            var new_data = {};
             new_data[i] = defaults[i];
             return addChromeData(new_data);
         }
-        for (x in items[i]) {
-            if (items[i].hasOwnProperty(x)) {
-                getChromeData(items[i][x], checkDefaults);
+        function mergeObjects(current_object, default_object) {
+            var x;
+            for (x in default_object) {
+                if (!default_object.hasOwnProperty(x)) {
+                    continue;
+                }
+                if (typeof current_object[x] === 'undefined') {
+                    needs_change = true;
+                    current_object[x] = default_object[x];
+                } else if (typeof current_object[x] === 'object') {
+                    needs_change = true;
+                    current_object[x] = mergeObjects(current_object[x], default_object[x]);
+                }
             }
+            return current_object;
+        }
+        var change_data = {};
+        change_data[i] = mergeObjects(new_data, defaults[i]);
+        if (needs_change) {
+            addChromeData(change_data);
         }
     }
     for (i in defaults) {
@@ -111,6 +93,56 @@ new_request.addEventListener('load', function(){
             getChromeData(i, checkDefaults);
         }
     }
+
+    // Inject scripts //
+    addScriptToDom('data/js/prepare.js');
+
+    // For pages where the pathname varies.
+    function findScript(path) {
+        if (path.indexOf('/profile/') >= 0) {
+            // Profile
+            return addScriptToDom('data/js/profile.js');
+        }
+        if (path.indexOf('/groups/') >= 0) {
+            return addScriptToDom('data/js/groups.js');
+        }
+    }
+
+    // Check if the user is in a game.
+    if (parseInt(location.port, 10) >= 8000) {
+        for (i in defaults.settings.value.functions.value) {
+            if (!defaults.settings.value.functions.value.hasOwnProperty(i)) {
+                continue;
+            }
+            if (defaults.settings.value.functions.value[i].uses.indexOf('game') < 0) {
+                continue;
+            }
+            addScriptToDom('data/js/game/' + i + '.js');
+        }
+        document.getElementById('tiles').src = chrome.extension.getURL('data/img/tiles.png');
+        document.getElementById('speedpad').src = chrome.extension.getURL('data/img/speedpad.png');
+        document.getElementById('speedpadred').src = chrome.extension.getURL('data/img/speedpadred.png');
+        document.getElementById('speedpadblue').src = chrome.extension.getURL('data/img/speedpadblue.png');
+        document.getElementById('portal').src = chrome.extension.getURL('data/img/portal.png');
+        document.getElementById('splats').src = chrome.extension.getURL('data/img/splats.png');
+    } else {
+        switch (location.pathname) {
+        case '/':
+            addScriptToDom('data/js/homepage.js');
+            break;
+        case '/groups/':
+            break;
+        case '/boards':
+            addScriptToDom('data/js/boards.js');
+            break;
+        default:
+            findScript(location.pathname);
+            break;
+        }
+    }
+
+    // The global script is injected on every page.
+    addScriptToDom('data/js/global.js');
 });
 new_request.open("get", chrome.extension.getURL('data/json/defaults.json'), true);
 new_request.send();
