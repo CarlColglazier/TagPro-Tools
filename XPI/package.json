@@ -1,0 +1,13 @@
+{
+  "title": "TagPro Tools",
+  "name": "tagprotools",
+  "version": "0.0.0",
+  "description": "Tools for TagPro",
+  "id": "tagprotools@carlcolglazier.com",
+  "main": "index.js",
+  "author": "Carl Colglazier",
+  "license": "ISC",
+  "permissions": {
+    "unsafe-content-script": true
+  }
+}
