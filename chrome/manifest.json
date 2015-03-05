@@ -15,15 +15,16 @@
         "*://tangent.jukejuice.com/*"
       ],
       "js": [
-        "chrome/main.js"
+        "main.js"
       ],
       "css": [
-        "data/css/tools.css"
+        "lib/css/fonts.css",
+        "lib/css/tools.css"
       ],
       "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
-    "data/*"
+    "lib/*"
   ]
 }

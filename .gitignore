@@ -1,3 +1,5 @@
 .idea/
 bin/
+chrome/lib/
+XPI/data/
 *.psd

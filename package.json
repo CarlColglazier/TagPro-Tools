@@ -1,0 +1,17 @@
+{
+  "name": "tagpro-tools",
+  "version": "0.0.0",
+  "description": "Tools for TagPro",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CarlColglazier/TagPro-Tools.git"
+  },
+  "author": "Carl Colglazier <carl@carlcolglazier.com> (http://carlcolglazier.com)",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-string-replace": "^1.0.0"
+  }
+}

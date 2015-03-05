@@ -95,16 +95,16 @@ new_request.addEventListener('load', function(){
     }
 
     // Inject scripts //
-    addScriptToDom('data/js/prepare.js');
+    addScriptToDom('lib/js/prepare.js');
 
     // For pages where the pathname varies.
     function findScript(path) {
         if (path.indexOf('/profile/') >= 0) {
             // Profile
-            return addScriptToDom('data/js/profile.js');
+            return addScriptToDom('lib/js/profile.js');
         }
         if (path.indexOf('/groups/') >= 0) {
-            return addScriptToDom('data/js/groups.js');
+            return addScriptToDom('lib/js/groups.js');
         }
     }
 
@@ -117,23 +117,25 @@ new_request.addEventListener('load', function(){
             if (defaults.settings.value.functions.value[i].uses.indexOf('game') < 0) {
                 continue;
             }
-            addScriptToDom('data/js/game/' + i + '.js');
+            addScriptToDom('lib/js/game/' + i + '.js');
         }
-        document.getElementById('tiles').src = chrome.extension.getURL('data/img/tiles.png');
-        document.getElementById('speedpad').src = chrome.extension.getURL('data/img/speedpad.png');
-        document.getElementById('speedpadred').src = chrome.extension.getURL('data/img/speedpadred.png');
-        document.getElementById('speedpadblue').src = chrome.extension.getURL('data/img/speedpadblue.png');
-        document.getElementById('portal').src = chrome.extension.getURL('data/img/portal.png');
-        document.getElementById('splats').src = chrome.extension.getURL('data/img/splats.png');
+
+        // TODO: Pull textures from extension data.
+        document.getElementById('tiles').src = chrome.extension.getURL('lib/img/tiles.png');
+        document.getElementById('speedpad').src = chrome.extension.getURL('lib/img/speedpad.png');
+        document.getElementById('speedpadred').src = chrome.extension.getURL('lib/img/speedpadred.png');
+        document.getElementById('speedpadblue').src = chrome.extension.getURL('lib/img/speedpadblue.png');
+        document.getElementById('portal').src = chrome.extension.getURL('lib/img/portal.png');
+        document.getElementById('splats').src = chrome.extension.getURL('lib/img/splats.png');
     } else {
         switch (location.pathname) {
         case '/':
-            addScriptToDom('data/js/homepage.js');
+            addScriptToDom('lib/js/homepage.js');
             break;
         case '/groups/':
             break;
         case '/boards':
-            addScriptToDom('data/js/boards.js');
+            addScriptToDom('lib/js/boards.js');
             break;
         default:
             findScript(location.pathname);
@@ -142,7 +144,7 @@ new_request.addEventListener('load', function(){
     }
 
     // The global script is injected on every page.
-    addScriptToDom('data/js/global.js');
+    addScriptToDom('lib/js/global.js');
 });
-new_request.open("get", chrome.extension.getURL('data/json/defaults.json'), true);
+new_request.open("get", chrome.extension.getURL('lib/json/defaults.json'), true);
 new_request.send();
