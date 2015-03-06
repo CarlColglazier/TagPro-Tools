@@ -25,7 +25,13 @@
           },
           "transparentViewport": {
             "identity": "Transparent Viewport",
-            "description": "Currently not working.",
+            "description": "",
+            "uses": ["game"],
+            "default": true
+          },
+          "texturePacks": {
+            "identity": "Custom Textures",
+            "description": "",
             "uses": ["game"],
             "default": true
           },

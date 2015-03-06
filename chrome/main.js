@@ -128,21 +128,27 @@ new_request.addEventListener('load', function(){
         callback(flattenObject(data));
     }
 
-    var i;
-    function checkDefaults(items) {
-        var needs_change = false,
-            new_data = (items[i]) ? items[i] : {},
-            x;
-        if (typeof items[i] === 'undefined') {
-            new_data[i] = defaults[i];
-            for (x in new_data[i]) {
-                if (!new_data[i].hasOwnProperty(x)) {
-                    continue;
-                }
-                if (typeof new_data[i][x] === 'string' && new_data[i][x].indexOf('TOOLS/') >= 0) {
-                    new_data[i][x] = chrome.extension.getURL(new_data[i][x].replace('TOOLS/','lib/'));
-                }
+    function replaceTOOLS(new_data) {
+        var x;
+        for (x in new_data) {
+            if (!new_data.hasOwnProperty(x)) {
+                continue;
             }
+            if (typeof new_data[x] === 'string' && new_data[x].indexOf('TOOLS/') >= 0) {
+                new_data[x] = chrome.extension.getURL(new_data[x].replace('TOOLS/', 'lib/'));
+            }
+        }
+        return new_data;
+    }
+
+    function checkDefaults(i, items, default_values) {
+        var needs_change = false,
+            new_data = (items) ? items : {},
+            defaults = replaceTOOLS(default_values),
+            x;
+        if (!items) {
+            new_data = {};
+            new_data[i] = defaults;
             return addChromeData(new_data);
         }
         function mergeObjects(current_object, default_object) {
@@ -160,41 +166,26 @@ new_request.addEventListener('load', function(){
             }
             return current_object;
         }
-        var change_data = {};
-        change_data[i] = mergeObjects(new_data, defaults[i]);
-        for (x in change_data[i]) {
-            if (!change_data[i].hasOwnProperty(x)) {
-                continue;
-            }
-            if (typeof change_data[i][x] === 'string' && change_data[i][x].indexOf('TOOLS/') >= 0) {
-                change_data[i][x] = chrome.extension.getURL(change_data[i][x].replace('TOOLS/',''));
-            }
-        }
+        var updated_data = {};
+        updated_data[i] = mergeObjects(new_data, defaults);
         if (needs_change) {
-            addChromeData(change_data);
+            addChromeData(updated_data);
         }
     }
+    function doubleCheck(i, default_values) {
+        getChromeData(i, function(items) {
+            checkDefaults(i, items, default_values);
+        });
+    }
     flattenSettings(defaults, function(data) {
+        var i;
         for (i in data) {
             if (!data.hasOwnProperty(i)) {
                 continue;
             }
-            getChromeData(i, checkDefaults);
+            doubleCheck(i, data[i]);
         }
     });
-
-    // Check if the user is in a game.
-    if (parseInt(location.port, 10) >= 8000) {
-
-        // TODO: Pull textures from extension data.
-        document.getElementById('tiles').src = chrome.extension.getURL('lib/img/tiles.png');
-        document.getElementById('speedpad').src = chrome.extension.getURL('lib/img/speedpad.png');
-        document.getElementById('speedpadred').src = chrome.extension.getURL('lib/img/speedpadred.png');
-        document.getElementById('speedpadblue').src = chrome.extension.getURL('lib/img/speedpadblue.png');
-        document.getElementById('portal').src = chrome.extension.getURL('lib/img/portal.png');
-        document.getElementById('splats').src = chrome.extension.getURL('lib/img/splats.png');
-    }
-
     addScriptToDom('lib/js/tools.js');
 });
 new_request.open("get", chrome.extension.getURL('lib/json/defaults.json'), true);

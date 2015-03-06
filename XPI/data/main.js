@@ -50,8 +50,7 @@ function readMenu(menu_response) {
     'use strict';
 
     // Sync defaults with local storage.
-    var defaults = JSON.parse(menu_response),
-        flat_defaults;
+    var defaults = JSON.parse(menu_response);
     menu_settings = JSON.parse(menu_response).settings.children;
     function flattenSettings(data, callback) {
         if (typeof data !== 'object') {
@@ -103,27 +102,29 @@ function readMenu(menu_response) {
         callback(flattenObject(data));
     }
 
-    var i;
-    function checkDefaults(items) {
-        if (!items) {
-            return addData(flat_defaults);
-        }
-        var needs_change = false,
-            new_data = (items[i]) ? items[i] : {};
-        if (typeof items[i] === 'undefined') {
-            new_data[i] = defaults[i];
-            for (let x in new_data[i]) {
-                if (!new_data[i].hasOwnProperty(x)) {
-                    continue;
-                }
-                if (typeof new_data[i][x] === 'string' && new_data[i][x].indexOf('TOOLS/') >= 0) {
-                    new_data[i][x] = new_data[i][x].replace('TOOLS/',self.options.uri);
-                }
+    function replaceTOOLS(new_data) {
+        for (let x in new_data) {
+            if (!new_data.hasOwnProperty(x)) {
+                continue;
             }
+            if (typeof new_data[x] === 'string' && new_data[x].indexOf('TOOLS/') >= 0) {
+                new_data[x] = new_data[x].replace('TOOLS/',self.options.uri);
+            }
+        }
+        return new_data;
+    }
+
+    function checkDefaults(i, items, default_values) {
+        let needs_change = false,
+            new_data = (items) ? items : {},
+            defaults = replaceTOOLS(default_values),
+            x;
+        if (!items) {
+            new_data = {};
+            new_data[i] = defaults;
             return addData(new_data);
         }
         function mergeObjects(current_object, default_object) {
-            var x;
             for (x in default_object) {
                 if (!default_object.hasOwnProperty(x)) {
                     continue;
@@ -138,27 +139,23 @@ function readMenu(menu_response) {
             }
             return current_object;
         }
-        var change_data = {};
-        change_data[i] = mergeObjects(new_data, defaults[i]);
-        for (let x in change_data[i]) {
-            if (!change_data[i].hasOwnProperty(x)) {
-                continue;
-            }
-            if (typeof change_data[i][x] === 'string' && change_data[i][x].indexOf('TOOLS/') >= 0) {
-                change_data[i][x] = change_data[i][x].replace('TOOLS/',self.options.uri);
-            }
-        }
+        let updated_data = {};
+        updated_data[i] = mergeObjects(new_data, defaults);
         if (needs_change) {
-            addData(change_data);
+            addData(updated_data);
         }
     }
+    function doubleCheck(i, default_values) {
+        getData(i, function(items) {
+            checkDefaults(i, items, default_values);
+        });
+    }
     flattenSettings(defaults, function(data) {
-        flat_defaults = data;
-        for (i in data) {
+        for (let i in data) {
             if (!data.hasOwnProperty(i)) {
                 continue;
             }
-            getData(i, checkDefaults);
+            doubleCheck(i, data[i]);
         }
     });
 
