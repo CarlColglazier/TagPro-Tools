@@ -131,13 +131,21 @@ new_request.addEventListener('load', function(){
     var i;
     function checkDefaults(items) {
         var needs_change = false,
-            new_data = (items[i]) ? items[i] : {};
+            new_data = (items[i]) ? items[i] : {},
+            x;
         if (typeof items[i] === 'undefined') {
             new_data[i] = defaults[i];
+            for (x in new_data[i]) {
+                if (!new_data[i].hasOwnProperty(x)) {
+                    continue;
+                }
+                if (typeof new_data[i][x] === 'string' && new_data[i][x].indexOf('TOOLS/') >= 0) {
+                    new_data[i][x] = chrome.extension.getURL(new_data[i][x].replace('TOOLS/','lib/'));
+                }
+            }
             return addChromeData(new_data);
         }
         function mergeObjects(current_object, default_object) {
-            var x;
             for (x in default_object) {
                 if (!default_object.hasOwnProperty(x)) {
                     continue;
@@ -154,6 +162,14 @@ new_request.addEventListener('load', function(){
         }
         var change_data = {};
         change_data[i] = mergeObjects(new_data, defaults[i]);
+        for (x in change_data[i]) {
+            if (!change_data[i].hasOwnProperty(x)) {
+                continue;
+            }
+            if (typeof change_data[i][x] === 'string' && change_data[i][x].indexOf('TOOLS/') >= 0) {
+                change_data[i][x] = chrome.extension.getURL(change_data[i][x].replace('TOOLS/',''));
+            }
+        }
         if (needs_change) {
             addChromeData(change_data);
         }

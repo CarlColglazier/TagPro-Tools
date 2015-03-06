@@ -112,6 +112,14 @@ function readMenu(menu_response) {
             new_data = (items[i]) ? items[i] : {};
         if (typeof items[i] === 'undefined') {
             new_data[i] = defaults[i];
+            for (let x in new_data[i]) {
+                if (!new_data[i].hasOwnProperty(x)) {
+                    continue;
+                }
+                if (typeof new_data[i][x] === 'string' && new_data[i][x].indexOf('TOOLS/') >= 0) {
+                    new_data[i][x] = new_data[i][x].replace('TOOLS/',self.options.uri);
+                }
+            }
             return addData(new_data);
         }
         function mergeObjects(current_object, default_object) {
@@ -132,6 +140,14 @@ function readMenu(menu_response) {
         }
         var change_data = {};
         change_data[i] = mergeObjects(new_data, defaults[i]);
+        for (let x in change_data[i]) {
+            if (!change_data[i].hasOwnProperty(x)) {
+                continue;
+            }
+            if (typeof change_data[i][x] === 'string' && change_data[i][x].indexOf('TOOLS/') >= 0) {
+                change_data[i][x] = change_data[i][x].replace('TOOLS/',self.options.uri);
+            }
+        }
         if (needs_change) {
             addData(change_data);
         }

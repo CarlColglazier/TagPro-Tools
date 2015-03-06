@@ -62,5 +62,14 @@
         }
       }
     }
+  },
+  "textures": {
+    "background": "/images/background.jpg",
+    "tiles": "TOOLS/img/tiles.png",
+    "splats": "TOOLS/img/splats.png",
+    "speedpad": "TOOLS/img/speedpad.png",
+    "speedpadred": "TOOLS/img/speedpadred.png",
+    "speedpadblue": "TOOLS/img/speedpadblue.png",
+    "portal": "TOOLS/img/portal.png"
   }
 }
