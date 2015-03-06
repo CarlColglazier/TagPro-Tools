@@ -1,52 +1,49 @@
 {
   "settings": {
-    "identity": "Settings",
-    "description": "Things to be turned on or off.",
-    "value": {
-      "functions": {
+    "children": {
+      "functions":{
         "identity": "Functions",
         "description": "The functions the power everything.",
-        "value": {
+        "children": {
           "overrideDisableControls": {
             "identity": "Use keys in chat.",
             "description": "Fixes the highly annoying sticky keys bug.",
             "uses": ["game"],
-            "value": true
+            "default": true
           },
           "spinBall": {
             "identity": "Spin ball",
             "description": "Adds spin to the ball itself.",
             "uses": ["game"],
-            "value": true
+            "default": true
           },
           "customColors": {
             "identity": "Custom colors",
             "description": "It just looks better.",
             "uses": ["game"],
-            "value": true
+            "default": true
           },
           "transparentViewport": {
             "identity": "Transparent Viewport",
             "description": "Currently not working.",
             "uses": ["game"],
-            "value": true
+            "default": true
           },
           "keyCommands": {
             "identity": "Tools official key commands.",
             "description": "Because using a mouse is too hard.",
             "uses": ["game", "home", "boards"],
-            "value": true
+            "default": true
           }
         }
       },
       "ui": {
         "identity": "Interface",
         "description": "Color settings",
-        "value": {
+        "children": {
           "colors": {
             "identity": "Colors",
-            "description": "One fish, two fish, red fish, blue fish.",
-            "value": {
+            "children": {
               "green": "#4FCC13",
               "dark green": "#539931",
               "red": "#DC143B",
@@ -58,7 +55,7 @@
               "stroke": "#636363"
             }
           },
-          "fonts": {
+          "fonts":{
             "primary": "Open Sans",
             "stroke thickness": 2
           }

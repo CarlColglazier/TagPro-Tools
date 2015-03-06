@@ -1,8 +1,8 @@
-/*global chrome */
+/* global unsafeWindow */
+/* global self */
+/* jshint esnext: true */
 
-// GLOBALS
 var menu_settings;
-
 
 // Remove from the DOM to clean things up.
 function removeScriptFromDom(target) {
@@ -13,71 +13,46 @@ function removeScriptFromDom(target) {
 // Used to inject scripts.
 function addScriptToDom(path) {
     'use strict';
-    var script = document.createElement('script');
+    let script = unsafeWindow.document.createElement('script');
     script.setAttribute('type', 'application/javascript');
-    script.src = chrome.extension.getURL(path);
+    script.src = self.options.uri + path;
     script.addEventListener('load', function (event) {
         removeScriptFromDom(event.target);
     });
-    (document.head || document.documentElement).appendChild(script);
+    (unsafeWindow.document.head || unsafeWindow.document.documentElement).appendChild(script);
 }
 
-// Get data from Chrome's storage.
-function getChromeData(request, callback) {
+var portCallbacks = {};
+
+// Get data from  storage.
+function getData(request, callback) {
     'use strict';
-    chrome.storage.local.get(request, function(results) {
-        if (results[request]) {
-            callback(results[request]);
-        } else if (results) {
-            callback(results);
-        } else {
-            callback(null);
-        }
-    });
+    portCallbacks[request] = callback;
+    self.port.emit('getData', request);
 }
 
-// Add data to Chrome's storage.
-function addChromeData(request) {
+self.port.on('newData', function(response) {
     'use strict';
-    chrome.storage.local.set(request);
-}
+    if (portCallbacks[response.kind]) {
+        portCallbacks[response.kind](response.value);
+        delete portCallbacks[response.kind];
+    }
+});
 
-// Listen for messages from the injected scripts.
-window.addEventListener('message', function (event) {
+// Add data to  storage.
+function addData(request) {
     'use strict';
-    if (event.origin !== location.origin || !event.data) {
-        return;
-    }
-    if (!event.data.type || !event.data.sender) {
-        return;
-    }
-    var new_message = event.data;
-    if (new_message.type === 'request') {
-        getChromeData(new_message.message, function(items){
-            window.postMessage({
-                type: 'response',
-                sender: new_message.sender,
-                message: items
-            }, location.href);
-        });
-    }
-    if (new_message.type === 'menu request') {
-        window.postMessage({
-            type: 'response',
-            sender: new_message.sender,
-            message: menu_settings
-        }, location.href);
-    }
-}, false);
+    self.port.emit('setData', request);
+}
 
 // Request default settings and populate storage.
-var new_request = new XMLHttpRequest();
-new_request.addEventListener('load', function(){
+function readMenu(menu_response) {
     'use strict';
 
     // Sync defaults with local storage.
-    var defaults = JSON.parse(this.responseText);
-    menu_settings = JSON.parse(this.responseText).settings.children;
+    var defaults = JSON.parse(menu_response),
+        flat_defaults;
+    menu_settings = JSON.parse(menu_response).settings.children;
     function flattenSettings(data, callback) {
         if (typeof data !== 'object') {
             return {};
@@ -130,11 +105,14 @@ new_request.addEventListener('load', function(){
 
     var i;
     function checkDefaults(items) {
+        if (!items) {
+            return addData(flat_defaults);
+        }
         var needs_change = false,
             new_data = (items[i]) ? items[i] : {};
         if (typeof items[i] === 'undefined') {
             new_data[i] = defaults[i];
-            return addChromeData(new_data);
+            return addData(new_data);
         }
         function mergeObjects(current_object, default_object) {
             var x;
@@ -155,31 +133,47 @@ new_request.addEventListener('load', function(){
         var change_data = {};
         change_data[i] = mergeObjects(new_data, defaults[i]);
         if (needs_change) {
-            addChromeData(change_data);
+            addData(change_data);
         }
     }
     flattenSettings(defaults, function(data) {
+        flat_defaults = data;
         for (i in data) {
             if (!data.hasOwnProperty(i)) {
                 continue;
             }
-            getChromeData(i, checkDefaults);
+            getData(i, checkDefaults);
         }
     });
 
-    // Check if the user is in a game.
-    if (parseInt(location.port, 10) >= 8000) {
+    addScriptToDom('js/tools.js');
+}
+readMenu(self.options.menu);
 
-        // TODO: Pull textures from extension data.
-        document.getElementById('tiles').src = chrome.extension.getURL('lib/img/tiles.png');
-        document.getElementById('speedpad').src = chrome.extension.getURL('lib/img/speedpad.png');
-        document.getElementById('speedpadred').src = chrome.extension.getURL('lib/img/speedpadred.png');
-        document.getElementById('speedpadblue').src = chrome.extension.getURL('lib/img/speedpadblue.png');
-        document.getElementById('portal').src = chrome.extension.getURL('lib/img/portal.png');
-        document.getElementById('splats').src = chrome.extension.getURL('lib/img/splats.png');
+// Listen for messages from the injected scripts.
+window.addEventListener('message', function (event) {
+    'use strict';
+    if (event.origin !== location.origin || !event.data) {
+        return;
     }
-
-    addScriptToDom('lib/js/tools.js');
-});
-new_request.open("get", chrome.extension.getURL('lib/json/defaults.json'), true);
-new_request.send();
+    if (!event.data.type || !event.data.sender) {
+        return;
+    }
+    var new_message = event.data;
+    if (new_message.type === 'request') {
+        getData(new_message.message, function(items){
+            window.postMessage({
+                type: 'response',
+                sender: new_message.sender,
+                message: items
+            }, location.href);
+        });
+    }
+    if (new_message.type === 'menu request') {
+        window.postMessage({
+            type: 'response',
+            sender: new_message.sender,
+            message: menu_settings
+        }, location.href);
+    }
+}, false);

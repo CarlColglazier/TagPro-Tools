@@ -1,6 +1,10 @@
 /* global require: false */
+/* jshint esnext: true */
 
-var pageMod = require("sdk/page-mod");
+let pageMod = require("sdk/page-mod"),
+    ss = require("sdk/simple-storage"),
+    self = require('sdk/self'),
+    data = self.data;
 
 pageMod.PageMod({
 
@@ -8,10 +12,34 @@ pageMod.PageMod({
     include: "*.koalabeast.com",
     contentScriptWhen: 'ready',
     contentScriptFile: [
-        './js/prepare.js',
-        './js/global.js'
+        './main.js'
     ],
+    contentScriptOptions: {
+        uri: data.url(),
+        menu: data.load('json/defaults.json')
+    },
     contentStyleFile: [
         './css/tools.css'
-    ]
+    ],
+    onAttach: function(worker) {
+        'use strict';
+        worker.port.on('getData', function(kind) {
+            let response = {
+                kind: kind,
+                value: ss.storage[kind]
+            };
+            worker.port.emit('newData', response);
+        });
+        worker.port.on('setData', function(data) {
+            if (typeof data === 'object') {
+                for (let i in data) {
+                    if (!data.hasOwnProperty(i)) {
+                        continue;
+                    }
+                    ss.storage[i] = data[i];
+                }
+            }
+        });
+    }
 });
+

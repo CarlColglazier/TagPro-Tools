@@ -1,5 +1,11 @@
 .idea/
 bin/
-chrome/lib/
-XPI/data/
+chrome/lib/*
+#Probably a better way to do this.
+XPI/data/css
+XPI/data/fonts
+XPI/data/img
+XPI/data/js
+XPI/data/json
+!XPI/data/main.js
 *.psd
