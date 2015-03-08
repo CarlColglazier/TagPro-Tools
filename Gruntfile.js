@@ -7,6 +7,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-string-replace');
     grunt.loadNpmTasks('grunt-babel');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.initConfig({
@@ -46,26 +47,41 @@ module.exports = function(grunt) {
                 dest: 'XPI/data/js/tools.js'
             }
         },
+        less: {
+            chrome: {
+                files: {
+                    "lib/css/tools.css": "lib/css/tools.less",
+                    "lib/css/fonts.css": "lib/css/fonts.less"
+                }
+            },
+            firefox: {
+                files: {
+                    "data/css/tools.css": "data/css/tools.less"
+                }
+            }
+        },
         clean: {
             chrome: [
                 'chrome/lib/js/*.js',
                 'chrome/lib/js/**/*.js',
+                'chrome/lib/css/*.less',
                 '!chrome/lib/js/tools.js'
             ],
             firefox: [
                 'XPI/data/js/*.js',
                 'XPI/data/js/**/*.js',
+                'XPI/data/css/*.less',
                 '!XPI/data/js/tools.js'
             ]
         },
         watch: {
             chrome: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:chrome','concat:chrome','clean:chrome','babel:chrome']
+                tasks: ['copy:chrome','concat:chrome','less:chrome','clean:chrome','babel:chrome']
             },
             firefox: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:firefox','concat:firefox','clean:firefox','babel:firefox']
+                tasks: ['copy:firefox','concat:firefox','less:firefox','clean:firefox','babel:firefox']
             }
         },
         babel: {
@@ -90,7 +106,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['copy','concat','clean','babel']);
+    grunt.registerTask('default', ['copy','concat','less','clean','babel']);
     grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome']);
     grunt.registerTask('firefox', ['copy:firefox', 'watch:firefox']);
     grunt.registerTask('develop', ['watch']);
