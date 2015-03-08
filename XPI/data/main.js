@@ -166,4 +166,13 @@ window.addEventListener('message', function (event) {
             message: TOOLS_settings
         }, location.href);
     }
+    if (new_message.type === 'setter') {
+        var new_data = {};
+        if (new_message.sender) {
+            new_data[new_message.sender] = new_message.message;
+        } else {
+            new_data = new_message.message;
+        }
+        addData(new_data);
+    }
 }, false);
