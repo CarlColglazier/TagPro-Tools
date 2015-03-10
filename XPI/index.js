@@ -8,8 +8,7 @@ let pageMod = require("sdk/page-mod"),
 
 pageMod.PageMod({
 
-    // TODO: Get array working.
-    include: "*.koalabeast.com",
+    include: ['*.koalabeast.com','*.newcompte.fr'],
     contentScriptWhen: 'ready',
     contentScriptFile: [
         './main.js'
