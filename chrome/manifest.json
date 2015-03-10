@@ -18,7 +18,6 @@
         "main.js"
       ],
       "css": [
-        "lib/css/fonts.css",
         "lib/css/tools.css"
       ],
       "run_at": "document_end"
