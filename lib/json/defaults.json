@@ -34,8 +34,7 @@
         "spinBall",
         "customColors",
         "transparentViewport",
-        "texturePacks",
-        "keyCommands"
+        "texturePacks"
       ]
     },
     "overrideDisableControls": {
