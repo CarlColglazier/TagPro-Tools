@@ -110,7 +110,7 @@ h2 {
     background: rgba(220, 20, 59, 0.75);
     -webkit-animation: fadeInChat 0.25s;
     animation: fadeInChat 0.25s;
-    overflow-x: scroll;
+    overflow-y: scroll;
     z-index: 100;
     //margin: auto;
     input {
@@ -118,10 +118,13 @@ h2 {
     }
 }
 
+.tools-menu-section {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .tools-settings-section {
-    display: inline-block;
-    width: 100%;
-    max-width: 20em;
+    flex: 1 1 15em;
 }
 
 .tools-logo-button {

@@ -84,19 +84,6 @@
         "primary",
         "stroke thickness"
       ]
-    },
-    "textures": {
-      "identity": "Textures",
-      "type": "menu",
-      "children": [
-        "background",
-        "tiles",
-        "splats",
-        "speedpad",
-        "speedpadred",
-        "speedpadblue",
-        "portal"
-      ]
     }
   }
 }

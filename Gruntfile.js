@@ -50,13 +50,13 @@ module.exports = function(grunt) {
         less: {
             chrome: {
                 files: {
-                    "lib/css/tools.css": "lib/css/tools.less",
-                    "lib/css/fonts.css": "lib/css/fonts.less"
+                    "chrome/lib/css/tools.css": "chrome/lib/css/tools.less",
+                    "chrome/lib/css/fonts.css": "chrome/lib/css/fonts.less"
                 }
             },
             firefox: {
                 files: {
-                    "data/css/tools.css": "data/css/tools.less"
+                    "XPI/data/css/tools.css": "XPI/data/css/tools.less"
                 }
             }
         },
