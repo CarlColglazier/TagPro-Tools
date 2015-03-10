@@ -5,7 +5,6 @@
     "customColors": true,
     "transparentViewport": true,
     "texturePacks": true,
-    "keyCommands": true,
     "green": "#4FCC13",
     "dark green": "#539931",
     "red": "#DC143B",
@@ -67,16 +66,6 @@
       "identity": "Custom Textures",
       "description": "",
       "uses": ["game"],
-      "type": "function"
-    },
-    "keyCommands": {
-      "identity": "Tools official key commands.",
-      "description": "Because using a mouse is too hard.",
-      "uses": [
-        "game",
-        "home",
-        "boards"
-      ],
       "type": "function"
     },
     "ui": {
