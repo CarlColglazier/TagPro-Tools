@@ -18,59 +18,59 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'lib/',
                     src: '**',
-                    dest: 'Chrome/lib'}]
+                    dest: 'builds/Chrome/lib'}]
             },
             firefox: {
                 files: [{
                     expand: true,
                     cwd: 'lib/',
                     src: '**',
-                    dest: 'XPI/data'
+                    dest: 'builds/XPI/data'
                 }]
             }
         },
         concat: {
             chrome: {
                 src: [
-                    'chrome/lib/js/prepare.js',
-                    'chrome/lib/js/modules/*.js',
-                    'chrome/lib/js/global.js'
+                    'builds/chrome/lib/js/prepare.js',
+                    'builds/chrome/lib/js/modules/*.js',
+                    'builds/chrome/lib/js/global.js'
                 ],
-                dest: 'chrome/lib/js/tools.js'
+                dest: 'builds/chrome/lib/js/tools.js'
             },
             firefox: {
                 src: [
-                    'XPI/data/js/prepare.js',
-                    'XPI/data/js/modules/*.js',
-                    'XPI/data/js/global.js'
+                    'builds/XPI/data/js/prepare.js',
+                    'builds/XPI/data/js/modules/*.js',
+                    'builds/XPI/data/js/global.js'
                 ],
-                dest: 'XPI/data/js/tools.js'
+                dest: 'builds/XPI/data/js/tools.js'
             }
         },
         less: {
             chrome: {
                 files: {
-                    "chrome/lib/css/tools.css": "chrome/lib/css/tools.less"
+                    "builds/chrome/lib/css/tools.css": "builds/chrome/lib/css/tools.less"
                 }
             },
             firefox: {
                 files: {
-                    "XPI/data/css/tools.css": "XPI/data/css/tools.less"
+                    "builds/XPI/data/css/tools.css": "builds/XPI/data/css/tools.less"
                 }
             }
         },
         clean: {
             chrome: [
-                'chrome/lib/js/*.js',
-                'chrome/lib/js/**/*.js',
-                'chrome/lib/css/*.less',
-                '!chrome/lib/js/tools.js'
+                'builds/chrome/lib/js/*.js',
+                'builds/chrome/lib/js/**/*.js',
+                'builds/chrome/lib/css/*.less',
+                '!builds/chrome/lib/js/tools.js'
             ],
             firefox: [
-                'XPI/data/js/*.js',
-                'XPI/data/js/**/*.js',
-                'XPI/data/css/*.less',
-                '!XPI/data/js/tools.js'
+                'builds/XPI/data/js/*.js',
+                'builds/XPI/data/js/**/*.js',
+                'builds/XPI/data/css/*.less',
+                '!builds/XPI/data/js/tools.js'
             ]
         },
         watch: {
@@ -89,7 +89,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'chrome/lib/js',
                     src: ['**/*.js'],
-                    dest: 'chrome/lib/js',
+                    dest: 'builds/chrome/lib/js',
                     ext: '.js'
                 }]
             },
@@ -98,7 +98,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'XPI/data/js',
                     src: ['**/*.js'],
-                    dest: 'XPI/data/js',
+                    dest: 'builds/XPI/data/js',
                     ext: '.js'
                 }]
             }
