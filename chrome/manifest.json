@@ -5,7 +5,8 @@
   "description": "Tools for TagPro",
   "author": "Carl Colglazier",
   "permissions": [
-    "storage"
+    "storage",
+    "notifications"
   ],
   "content_scripts": [
     {
@@ -23,6 +24,12 @@
       "run_at": "document_end"
     }
   ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  },
   "web_accessible_resources": [
     "lib/*"
   ]
