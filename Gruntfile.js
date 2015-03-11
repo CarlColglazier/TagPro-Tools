@@ -87,7 +87,7 @@ module.exports = function(grunt) {
             chrome: {
                 files: [{
                     expand: true,
-                    cwd: 'chrome/lib/js',
+                    cwd: 'builds/chrome/lib/js',
                     src: ['**/*.js'],
                     dest: 'builds/chrome/lib/js',
                     ext: '.js'
@@ -96,7 +96,7 @@ module.exports = function(grunt) {
             firefox: {
                 files: [{
                     expand: true,
-                    cwd: 'XPI/data/js',
+                    cwd: 'builds/XPI/data/js',
                     src: ['**/*.js'],
                     dest: 'builds/XPI/data/js',
                     ext: '.js'
