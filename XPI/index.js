@@ -15,7 +15,7 @@ pageMod.PageMod({
     ],
     contentScriptOptions: {
         uri: data.url(),
-        menu: data.load('json/defaults.json')
+        menu: JSON.parse(data.load('json/defaults.json'))
     },
     contentStyleFile: [
         './css/tools.css'

@@ -50,12 +50,12 @@ function readMenu(menu_response) {
     'use strict';
 
     // Sync defaults with local storage.
-    var defaults = JSON.parse(menu_response).values,
-        menu_settings = JSON.parse(menu_response).metadata;
+    var defaults = menu_response.values,
+        menu_settings = menu_response.metadata;
 
     function replaceTOOLS(new_data) {
         if (typeof new_data === 'string' && new_data.indexOf('TOOLS/') >= 0) {
-            new_data = new_data.replace('TOOLS/',self.options.uri);
+            return new_data.replace('TOOLS/', self.options.uri);
         }
         return new_data;
     }
