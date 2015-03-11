@@ -55,7 +55,9 @@ function readMenu(menu_response) {
 
     function replaceTOOLS(new_data) {
         if (typeof new_data === 'string' && new_data.indexOf('TOOLS/') >= 0) {
-            return new_data.replace('TOOLS/', self.options.uri);
+
+            // TODO: Create alternate method of loading texture in Firefox.
+            return new_data.replace('TOOLS/img', 'images');
         }
         return new_data;
     }
