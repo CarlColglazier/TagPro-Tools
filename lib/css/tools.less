@@ -1,7 +1,3 @@
-body {
-    font-family: "Open Sans", "Lucida Grande", Helvetica, Arial, sans-serif!important;
-}
-
 /* Homepage cleanup. */
 
 .hoverable {
@@ -139,5 +135,19 @@ h2 {
     &:hover {
         color: rgb(79, 204, 19);
         background-color: rgba(255, 255, 255, 0.75);
+    }
+}
+
+.macro {
+    display: flex;
+    input, button {
+        flex: 1 1 auto;
+    }
+
+}
+
+div {
+    .macro {
+        width: 100%;
     }
 }

@@ -25,7 +25,7 @@ pageMod.PageMod({
         worker.port.on('getData', function(kind) {
             let response = {
                 kind: kind,
-                value: ss.storage[kind]
+                value: ss.storage[kind] || {}
             };
             worker.port.emit('newData', response);
         });

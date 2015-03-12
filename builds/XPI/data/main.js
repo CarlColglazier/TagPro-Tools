@@ -153,7 +153,7 @@ window.addEventListener('message', function (event) {
     }
     var new_message = event.data;
     if (new_message.type === 'request') {
-        getData(new_message.message, function(items){
+        getData(new_message.sender, function(items){
             window.postMessage({
                 type: 'response',
                 sender: new_message.sender,

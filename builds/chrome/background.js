@@ -1,39 +1,41 @@
 /*global chrome */
 
 // GLOBALS
-var TOOLS_settings;
+var TOOLS_settings,
+    data = (function() {
+        'use strict';
+        return {
+            get: function(request, callback) {
+                chrome.storage.local.get(request, function(results) {
+                    if (results[request]) {
+                        callback(results[request]);
+                    } else {
+                        callback(results);
+                    }
+                });
+            },
+            add: function(request) {
+                chrome.storage.local.set(request);
+            }
+        };
 
-// Get data from Chrome's storage.
-function getChromeData(request, callback) {
-    'use strict';
-    chrome.storage.local.get(request, function(results) {
-        if (results[request]) {
-            callback(results[request]);
-        } else if (results) {
-            callback(results);
-        } else {
-            callback(null);
-        }
-    });
-}
-
-// Add data to Chrome's storage.
-function addChromeData(request) {
-    'use strict';
-    chrome.storage.local.set(request);
-}
+    })();
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
         'use strict';
         if (request.type === 'request') {
-            getChromeData(request.message, function(items){
-                sendResponse({
+            data.get(request.sender, function(items) {
+                var response = {
                     type: 'response',
                     sender: request.sender,
                     message: items
-                }, location.href);
+                };
+                sendResponse(response, location.href);
             });
+
+            // Declare the response as asynchronous.
+            return true;
         }
         if (request.type === 'settings request') {
             sendResponse({
@@ -49,7 +51,7 @@ chrome.runtime.onMessage.addListener(
             } else {
                 new_data = request.message;
             }
-            addChromeData(new_data);
+            data.add(new_data);
             if (request.sender === 'settings') {
                 TOOLS_settings.values = request.message;
             }
@@ -119,7 +121,7 @@ new_request.addEventListener('load', function(){
         "pages": function_object
     };
 
-    getChromeData('settings', function(items) {
+    data.get('settings', function(items) {
         var needs_change = false,
             i;
         for (i in defaults) {
@@ -134,7 +136,7 @@ new_request.addEventListener('load', function(){
         if (needs_change) {
             var new_settings = {};
             new_settings.settings = items;
-            addChromeData(new_settings);
+            data.add(new_settings);
         }
         TOOLS_settings = {
             "values": items,
