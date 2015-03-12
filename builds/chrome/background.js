@@ -81,7 +81,8 @@ new_request.addEventListener('load', function(){
             "home": [],
             "profile": [],
             "boards": [],
-            "game": []
+            "game": [],
+            "menu": []
         },
         settings,
         new_key;

@@ -5,6 +5,7 @@
     "customColors": true,
     "transparentViewport": true,
     "texturePacks": true,
+    "chatMacros": true,
     "green": "#4FCC13",
     "dark green": "#539931",
     "red": "#DC143B",
@@ -35,7 +36,8 @@
         "spinBall",
         "customColors",
         "transparentViewport",
-        "texturePacks"
+        "texturePacks",
+        "chatMacros"
       ]
     },
     "overrideDisableControls": {
@@ -64,6 +66,12 @@
     },
     "texturePacks": {
       "identity": "Custom Textures",
+      "description": "",
+      "uses": ["game"],
+      "type": "function"
+    },
+    "chatMacros": {
+      "identity": "Chat Macros",
       "description": "",
       "uses": ["game"],
       "type": "function"
