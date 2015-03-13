@@ -6,6 +6,7 @@
     "transparentViewport": true,
     "texturePacks": true,
     "chatMacros": true,
+    "gameStats": true,
     "green": "#4FCC13",
     "dark green": "#539931",
     "red": "#DC143B",
@@ -37,7 +38,8 @@
         "customColors",
         "transparentViewport",
         "texturePacks",
-        "chatMacros"
+        "chatMacros",
+        "gameStats"
       ]
     },
     "overrideDisableControls": {
@@ -72,6 +74,12 @@
     },
     "chatMacros": {
       "identity": "Chat Macros",
+      "description": "",
+      "uses": ["game"],
+      "type": "function"
+    },
+    "gameStats": {
+      "identity": "Collect game statistics",
       "description": "",
       "uses": ["game"],
       "type": "function"

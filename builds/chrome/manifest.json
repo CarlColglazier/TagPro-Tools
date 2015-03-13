@@ -26,7 +26,8 @@
   ],
   "background": {
     "scripts": [
-      "background.js"
+      "background.js",
+      "background/statsDatabase.js"
     ],
     "persistent": false
   },

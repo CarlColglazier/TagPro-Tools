@@ -160,15 +160,13 @@ window.addEventListener('message', function (event) {
                 message: items
             }, location.href);
         });
-    }
-    if (new_message.type === 'settings request') {
+    } else if (new_message.type === 'settings request') {
         window.postMessage({
             type: 'response',
             sender: new_message.sender,
             message: TOOLS_settings
         }, location.href);
-    }
-    if (new_message.type === 'setter') {
+    } else if (new_message.type === 'setter') {
         var new_data = {};
         if (new_message.sender) {
             new_data[new_message.sender] = new_message.message;
@@ -176,5 +174,7 @@ window.addEventListener('message', function (event) {
             new_data = new_message.message;
         }
         addData(new_data);
+    } else {
+        self.port.emit('generic message', new_message);
     }
 }, false);
