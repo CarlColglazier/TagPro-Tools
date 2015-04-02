@@ -28,7 +28,7 @@ window.addEventListener('message', function (event) {
         return;
     }
     var new_message = event.data;
-    chrome.runtime.sendMessage(new_message, function(response) {
+    chrome.runtime.sendMessage(new_message, function (response) {
         window.postMessage(response, location.origin);
     });
 }, false);

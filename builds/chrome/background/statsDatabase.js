@@ -44,7 +44,7 @@ var db,
         }
     };
 
-request.onsuccess = function(event) {
+request.onsuccess = function (event) {
     'use strict';
     db = event.target.result;
     if (db.setVersion) {
@@ -56,7 +56,7 @@ request.onsuccess = function(event) {
         }
     }
     chrome.runtime.onMessage.addListener(
-        function(request) {
+        function (request) {
             if (request.type === 'catstats') {
                 var i,
                     transaction = db.transaction(['CatStats'], 'readwrite'),
@@ -71,7 +71,7 @@ request.onsuccess = function(event) {
         });
 };
 
-request.onupgradeneeded = function(event) {
+request.onupgradeneeded = function (event) {
     'use strict';
     db = event.target.result;
     createObjectStore(db);

@@ -1,6 +1,6 @@
 /* global module */
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     'use strict';
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -50,12 +50,12 @@ module.exports = function(grunt) {
         less: {
             chrome: {
                 files: {
-                    "builds/chrome/lib/css/tools.css": "builds/chrome/lib/css/tools.less"
+                    'builds/chrome/lib/css/tools.css': 'builds/chrome/lib/css/tools.less'
                 }
             },
             firefox: {
                 files: {
-                    "builds/XPI/data/css/tools.css": "builds/XPI/data/css/tools.less"
+                    'builds/XPI/data/css/tools.css': 'builds/XPI/data/css/tools.less'
                 }
             }
         },
@@ -76,11 +76,11 @@ module.exports = function(grunt) {
         watch: {
             chrome: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:chrome','concat:chrome','less:chrome','clean:chrome','babel:chrome']
+                tasks: ['copy:chrome', 'concat:chrome', 'less:chrome', 'clean:chrome', 'babel:chrome']
             },
             firefox: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:firefox','concat:firefox','less:firefox','clean:firefox','babel:firefox']
+                tasks: ['copy:firefox', 'concat:firefox', 'less:firefox', 'clean:firefox', 'babel:firefox']
             }
         },
         babel: {
@@ -105,7 +105,7 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.registerTask('default', ['copy','concat','less','clean','babel']);
+    grunt.registerTask('default', ['copy', 'concat', 'less', 'clean', 'babel']);
     grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome']);
     grunt.registerTask('firefox', ['copy:firefox', 'watch:firefox']);
     grunt.registerTask('develop', ['watch']);

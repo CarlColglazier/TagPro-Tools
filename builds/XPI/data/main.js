@@ -2,7 +2,8 @@
 /* global self */
 /* jshint esnext: true */
 
-var TOOLS_settings;
+var TOOLS_settings,
+    portCallbacks = {};
 
 // Remove from the DOM to clean things up.
 function removeScriptFromDom(target) {
@@ -22,8 +23,6 @@ function addScriptToDom(path) {
     (unsafeWindow.document.head || unsafeWindow.document.documentElement).appendChild(script);
 }
 
-var portCallbacks = {};
-
 // Get data from  storage.
 function getData(request, callback) {
     'use strict';
@@ -31,7 +30,7 @@ function getData(request, callback) {
     self.port.emit('getData', request);
 }
 
-self.port.on('newData', function(response) {
+self.port.on('newData', function (response) {
     'use strict';
     if (portCallbacks[response.kind]) {
         portCallbacks[response.kind](response.value);
@@ -62,15 +61,15 @@ function readMenu(menu_response) {
         return new_data;
     }
 
-    var i, x,
+    let i, x,
         settings_object = {
-            "functions": {}
+            'functions': {}
         },
         function_object = {
-            "home": [],
-            "profile": [],
-            "boards": [],
-            "game": []
+            'home': [],
+            'profile': [],
+            'boards': [],
+            'game': []
         },
         settings,
         new_key;
@@ -78,7 +77,7 @@ function readMenu(menu_response) {
         if (!menu_settings.hasOwnProperty(i)) {
             continue;
         }
-        switch(menu_settings[i].type) {
+        switch (menu_settings[i].type) {
         case 'menu':
             if (menu_settings[i].children) {
                 settings_object[i] = {};
@@ -103,11 +102,11 @@ function readMenu(menu_response) {
         }
     }
     settings = {
-        "values": settings_object,
-        "pages": function_object
+        'values': settings_object,
+        'pages': function_object
     };
 
-    getData('settings', function(items) {
+    getData('settings', function (items) {
         var needs_change = false,
             i;
         if (!items) {
@@ -131,10 +130,10 @@ function readMenu(menu_response) {
             addData(new_settings);
         }
         TOOLS_settings = {
-            "values": items,
-            "tree": settings_object,
-            "pages": function_object,
-            "menu": menu_settings
+            'values': items,
+            'tree': settings_object,
+            'pages': function_object,
+            'menu': menu_settings
         };
     });
 
@@ -153,7 +152,7 @@ window.addEventListener('message', function (event) {
     }
     var new_message = event.data;
     if (new_message.type === 'request') {
-        getData(new_message.sender, function(items){
+        getData(new_message.sender, function (items) {
             window.postMessage({
                 type: 'response',
                 sender: new_message.sender,
@@ -167,7 +166,7 @@ window.addEventListener('message', function (event) {
             message: TOOLS_settings
         }, location.href);
     } else if (new_message.type === 'setter') {
-        var new_data = {};
+        let new_data = {};
         if (new_message.sender) {
             new_data[new_message.sender] = new_message.message;
         } else {

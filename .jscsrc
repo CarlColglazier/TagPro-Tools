@@ -1,0 +1,10 @@
+{
+  "preset"                : "crockford",
+  "esnext"                : true,
+  "validateQuoteMarks"    : "'",
+  "fileExtensions"        : [ ".js" ],
+  "excludeFiles"          : ["node_modules", "builds/chrome/lib/js", "builds/XPI/data/js", "bin"],
+  "disallowKeywords": [
+    "with"
+  ]
+}
