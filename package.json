@@ -23,6 +23,7 @@
     "grunt-contrib-less": "^1.0.0",
     "grunt-contrib-watch": "^0.6.1",
     "jscs": "^1.12.0",
-    "jshint": "^2.6.3"
+    "jshint": "^2.6.3",
+    "react": "^0.13.1"
   }
 }
