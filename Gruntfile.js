@@ -4,11 +4,9 @@ module.exports = function (grunt) {
     'use strict';
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-string-replace');
-    grunt.loadNpmTasks('grunt-babel');
-    grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-browserify');
 
     grunt.initConfig({
 
@@ -29,22 +27,14 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        concat: {
-            chrome: {
-                src: [
-                    'builds/chrome/lib/js/prepare.js',
-                    'builds/chrome/lib/js/modules/*.js',
-                    'builds/chrome/lib/js/global.js'
-                ],
-                dest: 'builds/chrome/lib/js/tools.js'
-            },
-            firefox: {
-                src: [
-                    'builds/XPI/data/js/prepare.js',
-                    'builds/XPI/data/js/modules/*.js',
-                    'builds/XPI/data/js/global.js'
-                ],
-                dest: 'builds/XPI/data/js/tools.js'
+        browserify: {
+            dist: {
+                files: {
+                    'lib/js/tools.js': 'lib/js/app.js'
+                },
+                options: {
+                    transform: ['babelify']
+                }
             }
         },
         less: {
@@ -60,6 +50,9 @@ module.exports = function (grunt) {
             }
         },
         clean: {
+            dist: [
+                'lib/js/tools.js'
+            ],
             chrome: [
                 'builds/chrome/lib/js/*.js',
                 'builds/chrome/lib/js/**/*.js',
@@ -76,36 +69,16 @@ module.exports = function (grunt) {
         watch: {
             chrome: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:chrome', 'concat:chrome', 'less:chrome', 'clean:chrome', 'babel:chrome']
+                tasks: ['browserify', 'copy:chrome', 'less:chrome', 'clean']
             },
             firefox: {
                 files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['copy:firefox', 'concat:firefox', 'less:firefox', 'clean:firefox', 'babel:firefox']
-            }
-        },
-        babel: {
-            chrome: {
-                files: [{
-                    expand: true,
-                    cwd: 'builds/chrome/lib/js',
-                    src: ['**/*.js'],
-                    dest: 'builds/chrome/lib/js',
-                    ext: '.js'
-                }]
-            },
-            firefox: {
-                files: [{
-                    expand: true,
-                    cwd: 'builds/XPI/data/js',
-                    src: ['**/*.js'],
-                    dest: 'builds/XPI/data/js',
-                    ext: '.js'
-                }]
+                tasks: ['browserify', 'copy:firefox', 'less:firefox', 'clean']
             }
         }
     });
 
-    grunt.registerTask('default', ['copy', 'concat', 'less', 'clean', 'babel']);
+    grunt.registerTask('default', ['browserify', 'copy', 'less', 'clean']);
     grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome']);
     grunt.registerTask('firefox', ['copy:firefox', 'watch:firefox']);
     grunt.registerTask('develop', ['watch']);
