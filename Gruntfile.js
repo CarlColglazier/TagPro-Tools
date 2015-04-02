@@ -68,12 +68,12 @@ module.exports = function (grunt) {
         },
         watch: {
             chrome: {
-                files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['browserify', 'copy:chrome', 'less:chrome', 'clean']
+                files: ['lib/**'],
+                tasks: ['browserify', 'copy:chrome', 'less:chrome', 'clean:dist', 'clean:chrome']
             },
             firefox: {
-                files: ['lib/*', 'lib/*/*', 'lib/*/*/*'],
-                tasks: ['browserify', 'copy:firefox', 'less:firefox', 'clean']
+                files: ['lib/**'],
+                tasks: ['browserify', 'copy:firefox', 'less:firefox', 'clean:dist', 'clean:firefox']
             }
         }
     });
