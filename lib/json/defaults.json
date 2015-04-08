@@ -6,6 +6,7 @@
     "transparentViewport": true,
     "texturePacks": true,
     "chatMacros": true,
+    "chatCommands": true,
     "gameStats": true,
     "green": "#4FCC13",
     "dark green": "#539931",
@@ -39,6 +40,7 @@
         "transparentViewport",
         "texturePacks",
         "chatMacros",
+        "chatCommands",
         "gameStats"
       ]
     },
@@ -74,6 +76,12 @@
     },
     "chatMacros": {
       "identity": "Chat Macros",
+      "description": "",
+      "uses": ["game"],
+      "type": "function"
+    },
+    "chatCommands": {
+      "identity": "Chat Commands",
       "description": "",
       "uses": ["game"],
       "type": "function"
