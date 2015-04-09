@@ -3,24 +3,24 @@
 // GLOBALS
 var TOOLS_settings,
     new_request = new XMLHttpRequest(), // Request default settings and populate storage.
-    data = (function () {
-        'use strict';
-        return {
-            get: function (request, callback) {
-                chrome.storage.local.get(request, function (results) {
-                    if (results[request]) {
-                        callback(results[request]);
-                    } else {
-                        callback(results);
-                    }
-                });
-            },
-            add: function (request) {
-                chrome.storage.local.set(request);
-            }
-        };
+    data;
 
-    })();
+data = {
+    get: function (request, callback) {
+        'use strict';
+        chrome.storage.local.get(request, function (results) {
+            if (results[request]) {
+                callback(results[request]);
+            } else {
+                callback(results);
+            }
+        });
+    },
+    add: function (request) {
+        'use strict';
+        chrome.storage.local.set(request);
+    }
+};
 
 chrome.runtime.onMessage.addListener(
     function (request, sender, sendResponse) {
@@ -66,7 +66,6 @@ new_request.addEventListener('load', function () {
     // Sync defaults with local storage.
     var defaults = JSON.parse(this.responseText).values,
         menu_settings = JSON.parse(this.responseText).metadata,
-        i, x,
         settings_object = {
             'functions': {}
         },
@@ -78,7 +77,6 @@ new_request.addEventListener('load', function () {
             'menu': []
         },
         settings,
-        new_key,
         new_settings;
 
     function replaceTOOLS(new_data) {
@@ -88,51 +86,40 @@ new_request.addEventListener('load', function () {
         return new_data;
     }
 
-    for (i in menu_settings) {
-        if (!menu_settings.hasOwnProperty(i)) {
-            continue;
-        }
+    Object.keys(menu_settings).forEach(function (i) {
         switch (menu_settings[i].type) {
         case 'menu':
             if (menu_settings[i].children) {
                 settings_object[i] = {};
-                for (x = 0; x < menu_settings[i].children.length; x++) {
-                    if (!menu_settings[i].children.hasOwnProperty(x)) {
-                        continue;
-                    }
-                    new_key = menu_settings[i].children[x];
-                    settings_object[i][new_key] = replaceTOOLS(defaults[new_key]);
-                }
+                menu_settings[i].children.forEach(function (x) {
+                    settings_object[i][x] = replaceTOOLS(defaults[x]);
+                });
             }
             break;
         case 'function':
             if (menu_settings[i].uses) {
-                for (x = 0; x < menu_settings[i].uses.length; x++) {
-                    if (function_object[menu_settings[i].uses[x]]) {
-                        function_object[menu_settings[i].uses[x]].push(i);
+                menu_settings[i].uses.forEach(function (x) {
+                    if (function_object[x]) {
+                        function_object[x].push(i);
                     }
-                }
+                });
             }
             break;
         }
-    }
+    });
     settings = {
         'values': settings_object,
         'pages': function_object
     };
 
     data.get('settings', function (items) {
-        var needs_change = false,
-            i;
-        for (i in defaults) {
-            if (!defaults.hasOwnProperty(i)) {
-                continue;
-            }
+        var needs_change = false;
+        Object.keys(defaults).forEach(function (i) {
             if (typeof items[i] === 'undefined') {
                 items[i] = replaceTOOLS(defaults[i]);
                 needs_change = true;
             }
-        }
+        });
         if (needs_change) {
             new_settings = {};
             new_settings.settings = items;

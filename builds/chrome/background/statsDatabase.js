@@ -30,19 +30,15 @@ var db,
         'griptime',
         'speedtime'
     ],
-    i,
-    createObjectStore = function (db) {
-        'use strict';
+    createObjectStore;
 
-        // Create an objectStore
-        var objectStore = db.createObjectStore('CatStats', { keyPath: 'id' });
-        for (i in columns) {
-            if (!columns.hasOwnProperty(i)) {
-                continue;
-            }
-            objectStore.createIndex(columns[i], columns[i], { unique: false });
-        }
-    };
+createObjectStore = function (db) {
+    'use strict';
+    var objectStore = db.createObjectStore('CatStats', { keyPath: 'id' });
+    columns.forEach(function (column) {
+        objectStore.createIndex(column, column, { unique: false });
+    });
+};
 
 request.onsuccess = function (event) {
     'use strict';
@@ -58,15 +54,11 @@ request.onsuccess = function (event) {
     chrome.runtime.onMessage.addListener(
         function (request) {
             if (request.type === 'catstats') {
-                var i,
-                    transaction = db.transaction(['CatStats'], 'readwrite'),
+                var transaction = db.transaction(['CatStats'], 'readwrite'),
                     store = transaction.objectStore('CatStats');
-                for (i in request.message) {
-                    if (!request.message.hasOwnProperty(i)) {
-                        continue;
-                    }
-                    store.add(request.message[i]);
-                }
+                request.message.forEach(function (message) {
+                    store.add(message);
+                });
             }
         });
 };
@@ -75,5 +67,4 @@ request.onupgradeneeded = function (event) {
     'use strict';
     db = event.target.result;
     createObjectStore(db);
-
 };

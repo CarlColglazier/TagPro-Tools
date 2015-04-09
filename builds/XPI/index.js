@@ -37,18 +37,15 @@ let pageMod = require('sdk/page-mod'),
         'griptime',
         'speedtime'
     ],
-    createObjectStore = function (db) {
-        'use strict';
+    createObjectStore;
 
-        // Create an objectStore
-        var objectStore = db.createObjectStore('CatStats', { keyPath: 'id' });
-        for (let i in columns) {
-            if (!columns.hasOwnProperty(i)) {
-                continue;
-            }
-            objectStore.createIndex(columns[i], columns[i], { unique: false });
-        }
-    };
+createObjectStore = function (db) {
+    'use strict';
+    var objectStore = db.createObjectStore('CatStats', { keyPath: 'id' });
+    columns.forEach(function (column) {
+        objectStore.createIndex(column, column, { unique: false });
+    });
+};
 
 request.onsuccess = function (event) {
     'use strict';
@@ -96,15 +93,11 @@ pageMod.PageMod({
         });
         worker.port.on('generic message', function (request) {
             if (request.type === 'catstats') {
-                var i,
-                    transaction = db.transaction(['CatStats'], 'readwrite'),
+                var transaction = db.transaction(['CatStats'], 'readwrite'),
                     store = transaction.objectStore('CatStats');
-                for (i in request.message) {
-                    if (!request.message.hasOwnProperty(i)) {
-                        continue;
-                    }
-                    store.add(request.message[i]);
-                }
+                request.message.forEach(function (message) {
+                    store.add(message);
+                });
             }
         });
     }

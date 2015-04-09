@@ -61,8 +61,7 @@ function readMenu(menu_response) {
         return new_data;
     }
 
-    let i, x,
-        settings_object = {
+    let settings_object = {
             'functions': {}
         },
         function_object = {
@@ -71,59 +70,47 @@ function readMenu(menu_response) {
             'boards': [],
             'game': []
         },
-        settings,
-        new_key;
-    for (i in menu_settings) {
-        if (!menu_settings.hasOwnProperty(i)) {
-            continue;
-        }
+        settings;
+    Object.keys(menu_settings).forEach(function (i) {
         switch (menu_settings[i].type) {
         case 'menu':
             if (menu_settings[i].children) {
                 settings_object[i] = {};
-                for (x = 0; x < menu_settings[i].children.length; x++) {
-                    if (!menu_settings[i].children.hasOwnProperty(x)) {
-                        continue;
-                    }
-                    new_key = menu_settings[i].children[x];
-                    settings_object[i][new_key] = replaceTOOLS(defaults[new_key]);
-                }
+                menu_settings[i].children.forEach(function (x) {
+                    settings_object[i][x] = replaceTOOLS(defaults[x]);
+                });
             }
             break;
         case 'function':
             if (menu_settings[i].uses) {
-                for (x = 0; x < menu_settings[i].uses.length; x++) {
-                    if (function_object[menu_settings[i].uses[x]]) {
-                        function_object[menu_settings[i].uses[x]].push(i);
+                menu_settings[i].uses.forEach(function (x) {
+                    if (function_object[x]) {
+                        function_object[x].push(i);
                     }
-                }
+                });
             }
             break;
         }
-    }
+    });
     settings = {
         'values': settings_object,
         'pages': function_object
     };
 
     getData('settings', function (items) {
-        var needs_change = false,
-            i;
+        var needs_change = false;
         if (!items) {
             let new_settings = {};
             items = {};
             new_settings.settings = items;
             addData(new_settings);
         }
-        for (i in defaults) {
-            if (!defaults.hasOwnProperty(i)) {
-                continue;
-            }
+        Object.keys(defaults).forEach(function (i) {
             if (typeof items[i] === 'undefined') {
                 items[i] = replaceTOOLS(defaults[i]);
                 needs_change = true;
             }
-        }
+        });
         if (needs_change) {
             let new_settings = {};
             new_settings.settings = items;
@@ -136,7 +123,6 @@ function readMenu(menu_response) {
             'menu': menu_settings
         };
     });
-
     addScriptToDom('js/tools.js');
 }
 readMenu(self.options.menu);
