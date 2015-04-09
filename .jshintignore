@@ -2,3 +2,4 @@ node_modules
 bin
 builds/chrome/lib/js
 builds/XPI/data/js
+tests/lib/js

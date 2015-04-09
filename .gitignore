@@ -8,3 +8,4 @@ builds/XPI/data/js
 builds/XPI/data/json
 !builds/XPI/data/main.js
 *.psd
+tests/lib

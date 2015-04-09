@@ -25,6 +25,14 @@ module.exports = function (grunt) {
                     src: '**',
                     dest: 'builds/XPI/data'
                 }]
+            },
+            tests: {
+                files: [{
+                    expand: true,
+                    cwd: 'lib/',
+                    src: '**',
+                    dest: 'tests/lib'
+                }]
             }
         },
         browserify: {
@@ -47,6 +55,11 @@ module.exports = function (grunt) {
                 files: {
                     'builds/XPI/data/css/tools.css': 'builds/XPI/data/css/tools.less'
                 }
+            },
+            tests: {
+                files: {
+                    'tests/lib/css/tools.css': 'tests/lib/css/tools.less'
+                }
             }
         },
         clean: {
@@ -64,15 +77,21 @@ module.exports = function (grunt) {
                 'builds/XPI/data/js/**/*.js',
                 'builds/XPI/data/css/*.less',
                 '!builds/XPI/data/js/tools.js'
+            ],
+            tests: [
+                'tests/lib/js/*.js',
+                'tests/lib/js/**/*.js',
+                'tests/lib/css/*.less',
+                '!tests/lib/js/tools.js'
             ]
         },
         watch: {
             chrome: {
-                files: ['lib/**'],
+                files: ['lib/**', '!lib/js/tools.js'],
                 tasks: ['browserify', 'copy:chrome', 'less:chrome', 'clean:dist', 'clean:chrome']
             },
             firefox: {
-                files: ['lib/**'],
+                files: ['lib/**', '!lib/js/tools.js'],
                 tasks: ['browserify', 'copy:firefox', 'less:firefox', 'clean:dist', 'clean:firefox']
             }
         }
