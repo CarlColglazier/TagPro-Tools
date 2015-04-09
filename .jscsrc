@@ -3,7 +3,7 @@
   "esnext"                : true,
   "validateQuoteMarks"    : "'",
   "fileExtensions"        : [ ".js" ],
-  "excludeFiles"          : ["node_modules", "builds/chrome/lib/js", "builds/XPI/data/js", "bin", "tests/lib/**"],
+  "excludeFiles"          : ["node_modules", "builds/chrome/lib/**", "builds/XPI/data/js/**", "bin", "tests/lib/**"],
   "disallowKeywords": [
     "with"
   ]
