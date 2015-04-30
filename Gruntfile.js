@@ -107,7 +107,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['browserify', 'copy', 'less', 'clean']);
     grunt.registerTask('testing', ['browserify', 'copy:tests', 'less:tests', 'clean']);
-    grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome', 'watch:chromejs','watch:chromecss']);
+    grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome', 'watch:chromejs', 'watch:chromecss']);
     grunt.registerTask('firefox', ['copy:firefox', 'watch:firefox']);
     grunt.registerTask('develop', ['watch']);
 };
