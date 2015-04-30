@@ -86,9 +86,17 @@ module.exports = function (grunt) {
             ]
         },
         watch: {
-            chrome: {
-                files: ['lib/**', '!lib/js/tools.js'],
+            chromejs: {
+                files: ['lib/js/**', '!lib/js/tools.js'],
                 tasks: ['browserify', 'copy:chrome', 'less:chrome', 'clean:dist', 'clean:chrome']
+            },
+            chromecss: {
+                files: ['lib/css/**'],
+                tasks: ['copy:chrome', 'less:chrome', 'clean:dist', 'clean:chrome']
+            },
+            chrome: {
+                files: ['lib/**', '!lib/js/**', '!lib/css/**'],
+                tasks: ['copy:chrome']
             },
             firefox: {
                 files: ['lib/**', '!lib/js/tools.js'],
@@ -99,7 +107,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', ['browserify', 'copy', 'less', 'clean']);
     grunt.registerTask('testing', ['browserify', 'copy:tests', 'less:tests', 'clean']);
-    grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome']);
+    grunt.registerTask('chrome', ['copy:chrome', 'watch:chrome', 'watch:chromejs','watch:chromecss']);
     grunt.registerTask('firefox', ['copy:firefox', 'watch:firefox']);
     grunt.registerTask('develop', ['watch']);
 };

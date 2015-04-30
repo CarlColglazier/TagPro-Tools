@@ -24,6 +24,10 @@
   "trailing"      : true,
   "globals"       : {
     "tagpro"      : true,
-    "chrome"      : true
+    "chrome"      : true,
+    "wait"        : true,
+    "PIXI"        : true,
+    "cloudkid"    : true,
+    "performance" : true
   }
 }
